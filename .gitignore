@@ -1,2 +1,5 @@
-
+*.o
 example-programs
+main
+Makefile.programs
+*.mid
