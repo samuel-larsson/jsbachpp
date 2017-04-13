@@ -40,7 +40,7 @@ void processTick(int track){
 }
 
 bool checkNote(){
-  
+
 }
 
 void generateMeasures(int measures){
