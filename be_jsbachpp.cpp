@@ -1,6 +1,7 @@
 #include <iostream>
 #include "./include/MidiFile.h"
 #include "./include/MidiEvent.h"
+#include "class_track.h"
 
 using namespace std;
 
@@ -12,12 +13,13 @@ struct midisong {
   MidiFile outputfile;
   vector<uchar> midievent;
 
-  int track1Melody[MAXNOTES], track1Rhythm[MAXNOTES];
+  track cantus;
+
   int track2Melody[MAXNOTES], track2Rhythm[MAXNOTES];
   int track3Melody[MAXNOTES], track3Rhythm[MAXNOTES];
   int track4Melody[MAXNOTES], track4Rhythm[MAXNOTES];
 
-  int leaps;
+  int intervals[MAXNOTES];
 
   int currIndex1, currIndex2, currIndex3, currIndex4;
   int currLength1, currLength2, currLength3, currLength4;
@@ -28,7 +30,7 @@ struct midisong {
 
 void initTracks(){
   for(int i = 0; i < 9999; i++){
-    song.track1Melody[i] = -1;
+    song.cantus.melody[i] = -1;
     song.track2Melody[i] = -1;
     song.track3Melody[i] = -1;
     song.track4Melody[i] = -1;
@@ -50,11 +52,11 @@ void saveToFile(){
   int i=0;
   int actiontime = 0;      // temporary storage for MIDI event time
   song.midievent[2] = 64;       // store attack/release velocity for note command
-  while (song.track1Melody[i] >= 0) {
+  while (song.cantus.melody[i] >= 0) {
      song.midievent[0] = 0x90;     // store a note on command (MIDI channel 1)
-     song.midievent[1] = song.track1Melody[i];
+     song.midievent[1] = song.cantus.melody[i];
      song.outputfile.addEvent(1, actiontime, song.midievent);
-     actiontime += song.tpq * song.track1Rhythm[i];
+     actiontime += song.tpq * song.cantus.rhythm[i];
      song.midievent[0] = 0x80;     // store a note on command (MIDI channel 1)
      song.outputfile.addEvent(1, actiontime, song.midievent);
      i++;
@@ -149,7 +151,7 @@ int getPreviousNote(int track){
   if(song.currTick != 0){
     switch(track){
       case 1:
-        return song.track1Melody[song.currIndex1-1];
+        return song.cantus.melody[song.currIndex1-1];
       case 2:
         return song.track2Melody[song.currIndex2-1];
       case 3:
@@ -168,8 +170,8 @@ int getPreviousNote(int track){
 void addNote(int track, int note, int length){
   switch(track){
     case 1:
-      song.track1Melody[song.currIndex1] = note;
-      song.track1Rhythm[song.currIndex1] = length;
+      song.cantus.melody[song.currIndex1] = note;
+      song.cantus.rhythm[song.currIndex1] = length;
       song.currLength1 = 0;
       song.noteLength1 = length;
       song.currIndex1++;
