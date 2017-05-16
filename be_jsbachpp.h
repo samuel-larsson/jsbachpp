@@ -10,6 +10,7 @@ int getLengthLeft(int track);
 int getPreviousNote(int track);
 void addNote(int track, int note, int length);
 
+bool be_isRep(int track, int note);
 
 #define C5 84
 #define B4 83

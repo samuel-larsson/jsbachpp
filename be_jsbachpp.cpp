@@ -19,9 +19,7 @@ struct midisong {
   int track3Melody[MAXNOTES], track3Rhythm[MAXNOTES];
   int track4Melody[MAXNOTES], track4Rhythm[MAXNOTES];
 
-  int intervals[MAXNOTES];
-
-  int currIndex1, currIndex2, currIndex3, currIndex4;
+  int currIndex2, currIndex3, currIndex4;
   int currLength1, currLength2, currLength3, currLength4;
   int noteLength1, noteLength2, noteLength3, noteLength4;
   int currTick;
@@ -36,7 +34,7 @@ void initTracks(){
     song.track4Melody[i] = -1;
   }
 
-  song.currIndex1 = 0;
+  song.cantus.index = 0;
   song.currIndex2 = 0;
   song.currIndex3 = 0;
   song.currIndex4 = 0;
@@ -151,7 +149,7 @@ int getPreviousNote(int track){
   if(song.currTick != 0){
     switch(track){
       case 1:
-        return song.cantus.melody[song.currIndex1-1];
+        return song.cantus.melody[song.cantus.index-1];
       case 2:
         return song.track2Melody[song.currIndex2-1];
       case 3:
@@ -170,11 +168,14 @@ int getPreviousNote(int track){
 void addNote(int track, int note, int length){
   switch(track){
     case 1:
-      song.cantus.melody[song.currIndex1] = note;
-      song.cantus.rhythm[song.currIndex1] = length;
+      song.cantus.melody[song.cantus.index] = note;
+      song.cantus.rhythm[song.cantus.index] = length;
       song.currLength1 = 0;
       song.noteLength1 = length;
-      song.currIndex1++;
+      if(song.cantus.index != 0){
+        song.cantus.intervals[song.cantus.index - 1] = song.cantus.melody[song.cantus.index];
+      }
+      song.cantus.index++;
       break;
     case 2:
       song.track2Melody[song.currIndex2] = note;
@@ -199,5 +200,19 @@ void addNote(int track, int note, int length){
       break;
     default:
       break;
+  }
+}
+
+bool be_isRep(int track, int note){
+  switch(track){
+    case 1:
+      for(int i = 0; i < song.cantus.index; i++){
+        if(song.cantus.intervals[i] == 0){
+          return true;
+        }
+      }
+      return false;
+    default:
+      return true;
   }
 }

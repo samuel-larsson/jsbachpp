@@ -26,21 +26,23 @@ bool isInScale(int nextNote){
   return false;
 }
 
+bool checkNote(int note){
+  if(be_isRep(1, note) /*|| be_isDissonant() || be_hasClimax() || be_manyDirChg() || be_isFinalStep() || be_isLeapDirChg() || be_hasConsecLeaps() || be_isSameIntervals() || be_hasNoodling() || be_hasLongRuns() || be_hasTension() || be_hasSeq()*/){
+
+  }
+}
+
 void processTick(int track){
   srand(time(0));
 
   if(isZeroLeft(track)){
     int suggestedNote = rand() % 25 - 12 + getPreviousNote(1);
-    while(!isPerfect(getPreviousNote(1), suggestedNote) || !isInScale(suggestedNote)){
+    while(!checkNote(suggestedNote)){
       cout << getPreviousNote(1) - suggestedNote << endl;
       suggestedNote = rand() % 25 - 12 + getPreviousNote(1);
     }
     addNote(1, suggestedNote, 1);
   }
-}
-
-bool checkNote(){
-
 }
 
 void generateMeasures(int measures){

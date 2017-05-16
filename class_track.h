@@ -9,6 +9,7 @@ struct track {
   int intervals[MAXNOTES];
   int leaps[MAXNOTES];
 
+  int index;
 };
 
 #endif
